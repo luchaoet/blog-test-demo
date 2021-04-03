@@ -10,7 +10,8 @@ Function.prototype.call = function () {
   return result
 }
 Function.prototype.apply = function () {
-  const [context, ...args] = arguments
+  // 第二个参数是数组
+  const [context, args] = arguments
   const _context = context || window
   _context.fn = this
   const result = _context.fn(...args)
@@ -24,6 +25,7 @@ Function.prototype.bind = function () {
   const _this = this
   // bind返回一个函数
   return function () {
+    // 调用bind时可能会接收参数 args，返回一个函数后继续接收参数 arguments
     return _this.call(_context, ...args, ...arguments)
   }
 }

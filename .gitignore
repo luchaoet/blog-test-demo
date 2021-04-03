@@ -4,6 +4,7 @@ npm-debug.log
 npm-debug.log.*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 .idea
 examples/dist
 .npmrc
@@ -11,5 +12,5 @@ coverage
 dist
 .project
 .vscode
-
+build
 yarn.lock
