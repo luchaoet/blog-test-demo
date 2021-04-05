@@ -51,7 +51,21 @@ const promptList = [
         name: 'yellow',
       },
     ],
+    filter: (v) => {
+      console.log(v)
+      return ['red', 'ee']
+    },
   },
+  //   {
+  //     type: 'password',
+  //     message: '请输入密码：',
+  //     name: 'pwd',
+  //   },
+  //   {
+  //     type: 'editor',
+  //     message: '请输入备注：',
+  //     name: 'editor',
+  //   },
 ]
 inquirer.prompt(promptList).then((answers) => {
   console.log(answers)
