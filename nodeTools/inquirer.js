@@ -2,7 +2,7 @@ const inquirer = require('inquirer')
 
 const promptList = [
   //   { type: 'confirm', name: 'age', message: '输入年龄' },
-  //   { type: 'input', name: 'description', message: '请输入项目描述', default: 'a vue`s project' },
+  { type: 'input', name: 'description', message: '请输入项目描述', default: 'a vue`s project' },
   //   { type: 'confirm', name: 'update', message: '是否强制刷新？', default: false },
   //   { type: 'list', name: 'update', message: '是否强制刷新？' },
   //   { type: 'list', name: 'fruit', choices: ['Apple', 'Pear', 'Banana'], message: '请选择一种水果', default: 'Banana' },
@@ -51,10 +51,8 @@ const promptList = [
         name: 'yellow',
       },
     ],
-    filter: (v) => {
-      console.log(v)
-      return ['red', 'ee']
-    },
+    pageSize: 30,
+    prefix: '测试：',
   },
   //   {
   //     type: 'password',
