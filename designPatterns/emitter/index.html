@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    designPatterns
+</body>
+<script src="./index.js"></script>
+<script>
+    const emitter = new Emitter()
+    const handle = () => {
+        console.log(this)
+    }
+    // emitter.on('onChange', handle)
+    // emitter.on('onChange', handle)
+    // emitter.emit('onChange', 111, 222)
+    // emitter.off('onChange')
+    // emitter.off('onChange')
+    // 订阅
+    emitter.on('test', handle)
+    emitter.on('test', () => {console.log(2)})
+    
+    emitter.on('func', () => {console.log(1)})
+    
+    // 发布
+    emitter.emit('test')
+    emitter.off('test', handle)
+    console.log(emitter)
+
+</script>
+</html>
