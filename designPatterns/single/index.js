@@ -16,6 +16,3 @@ const Person = (function () {
     }
   }
 })()
-
-new Person('Lucy').getName() // Lucy
-new Person('Lucas').getName() // Lucy
