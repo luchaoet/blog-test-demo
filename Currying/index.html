@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Currying
+</body>
+<script>
+var adder = function () {
+    var _args = [];
+    return function () {
+        if (arguments.length === 0) {
+            return _args.reduce(function (a, b) {
+                return a + b;
+            });
+        }
+        _args.push(...arguments)
+        return arguments.callee;
+    }
+};
+// var sum = adder();
+// // 一次调用可输入一个或者多个参数，并且支持链式调用 
+// var a = sum(1)(2,3)(4)()
+// console.log(a) // 10
+
+
+
+
+// 轻提示
+function Toast(option){
+  this.prompt = '';
+}
+Toast.prototype.show = function(){
+    console.log(this.prompt);
+}
+var obj = {
+    prompt: '新对象'
+};
+function unCurrying(fn){
+    return function(){
+        var args = [].slice.call(arguments);
+        var that = args.shift(); // obj
+        console.log(that)
+        return fn.apply(that, args);
+    }
+}
+var objShow = unCurrying(Toast.prototype.show);
+objShow(obj); // 新对象
+</script>
+</html>
