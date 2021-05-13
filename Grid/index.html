@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+
+            /* height: 100vh; */
+
+            margin: 0;
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            grid-auto-flow: column;
+        }
+        div {
+            background-color: coral;
+            text-align: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <script>
+        const body = document.getElementsByTagName('body')[0];
+        createElement(body, 'div', 9)
+        
+        function createElement(parent, tag, num) {
+            for (let index = 0; index < num; index++) {
+                const div = document.createElement(tag);
+                div.innerHTML = index + 1
+                body.appendChild(div)
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">dispatchEvent</button>
+</body>
+<script>
+    var dom = document.getElementById('btn')
+    dom.addEventListener('alert', function (event) {
+        console.log(event)
+    }, false);
+    
+    // 创建
+    var evt = document.createEvent("HTMLEvents");
+    // 初始化
+    evt.initEvent("alert", false, false);
+    
+    // 触发, 即弹出文字
+    dom.dispatchEvent(evt);
+</script>
+</html>
