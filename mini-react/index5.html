@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="./js/react.development.js"></script>
+    <script src="./js/react-dom.development.js"></script>
+    <script src="./js/babel.min.js"></script>
+    
+    <script type="text/babel">
+
+        // vnode -> node
+        function render(vnode, root) {
+            const node = createNode(vnode)
+            root.appendChild(node)
+        }
+
+        function createNode(vnode) {
+            const { type, props } = vnode;
+            let node = null;
+            if(typeof type === 'string') {
+                node = updateHostComponent(vnode)
+            }else if(typeof type === 'function'){
+                node = type.prototype.isReactComponent ? updateClassComponent(vnode) : updateFunctionComponent(vnode)
+            }else{
+                node = updateTextComponent(vnode)
+            }
+            return node
+        }
+
+        function updateHostComponent(vnode) {
+            const { type, props } = vnode;
+            const node = document.createElement(type);
+            Object.keys(props)
+            .filter(k => k !== 'children')
+            .forEach(k => {
+                node[k] = props[k]
+            })
+            props.children && reconcileChildren(node, props.children);
+            return node;
+        }
+
+        function updateTextComponent(type) {
+            return document.createTextNode(type)
+        }
+
+        function updateFunctionComponent(vnode) {
+            const { type, props } = vnode;
+            const _vnode = type(props);
+            return createNode(_vnode);
+        }
+
+        function updateClassComponent(vnode) {
+            const { type, props } = vnode;
+            const _vnode = new type(props).render()
+            return createNode(_vnode)
+        }
+
+        function reconcileChildren(node, children) {
+            const _children = Array.isArray(children) ? children : [children];
+            for(let i = 0; i < _children.length; i ++) {
+                const child = _children[i];
+                render(child, node)
+            }   
+        }
+
+        function Component(props) {
+            this.props = props;
+        }
+        Component.prototype.isReactComponent = {}
+
+        const _ReactDOM = {
+            render
+        }
+
+        class Com extends Component {
+            render() {
+                return (
+                    <div className="com">{this.props.name}</div>
+                )
+            }
+        }
+
+        function Fun(props) {
+            return <div className="func">{props.name}</div>
+        }
+    
+        /** @jsx React.createElement */
+        const element = (
+            <div className="wrap">
+                <h1 className="text-h1">
+                    <p id="p">p</p>
+                    <a>a</a>
+                </h1>
+                <Fun name="Lucas" />
+                <Com name="Lucas" />
+            </div>
+        )
+
+        console.log(element)
+
+        
+
+        _ReactDOM.render(element, document.getElementById('container'))
+    </script>
+</body>
+</html>
