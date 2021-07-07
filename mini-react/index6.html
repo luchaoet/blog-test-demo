@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="./js/react.development.js"></script>
+    <script src="./js/react-dom.development.js"></script>
+    <script src="./js/babel.min.js"></script>
+    
+    <script type="text/babel">
+        /****************************************************************/
+        requestIdleCallback(workLoop);
+        let nextUnitOfWork = null;
+        function workLoop(idleDeadline) {
+            while(nextUnitOfWork && idleDeadline.timeRemaining() > 1) {
+                // 执行任务 并返回下一次任务
+                nextUnitOfWork = perforUnitOfWork(nextUnitOfWork)
+            }
+            // 提交
+            if(!nextUnitOfWork) {
+                commitRoot();
+            }
+            requestIdleCallback(workLoop);
+        }
+        /****************************************************************/
+
+        let wipRoot = null;
+        function render(vnode, root) {
+            wipRoot = {
+                type: root.nodeName.toLowerCase(),
+                props: {
+                    children: {...vnode}
+                },
+                stateNode: root
+            }
+            nextUnitOfWork = wipRoot;
+        }
+
+        function commitRoot() {
+            wipRoot && commitWorker(wipRoot.child)
+            wipRoot = null;
+        }
+
+        // fiber
+        // type
+        // key
+        // props
+        // stateNode
+        // child 第一个子节点
+        // sibling 下一个兄弟节点
+        // return 父节点
+        function perforUnitOfWork(workInProgress) {
+            /****************** 执行任务 *********************/
+            const { type } = workInProgress;
+            if(typeof type === 'string') {
+                // 原生节点
+                updateHostComponent(workInProgress)
+            }else {
+                // 函数组件等
+            }
+
+            /*************** 深度遍历 返回下一个执行任务 ***************/
+            // 返回子节点
+            if(workInProgress.child) {
+                return workInProgress.child
+            }
+            // 返回下一个兄弟节点
+            // 若没有 则找父节点的下一个兄弟节点
+            let nextFiber = workInProgress;
+            while (nextFiber) {
+                if(nextFiber.sibling) {
+                    return nextFiber.sibling
+                }
+                nextFiber = nextFiber.return;
+            }
+            
+        }
+        
+        function commitWorker(workInProgress) {
+            if(!workInProgress) return;
+            const parentNode = workInProgress.return.stateNode;
+            if(workInProgress.stateNode) {
+                parentNode.appendChild(workInProgress.stateNode)
+            }
+            commitWorker(workInProgress.child)
+            commitWorker(workInProgress.sibling)
+        }
+
+        // 创建并返回 dom
+        function createNode(workInProgress) {
+            const { type, props } = workInProgress;
+            const node = document.createElement(type);
+            // 添加dom属性及创建文本节点
+            updateNode(node, props);
+            return node;
+        }
+
+        function updateHostComponent(workInProgress) {
+            const { type, props } = workInProgress;
+            const node = document.createElement(type);
+            if(!workInProgress.stateNode) {
+                workInProgress.stateNode = createNode(workInProgress);
+            }
+            reconcileChildren(workInProgress, props.children);
+        }
+
+        // 添加dom属性及创建文本节点
+        function updateNode(node, props) {
+            Object.keys(props)
+            .forEach(k => {
+                if(k === 'children') {
+                    if(typeof props[k] === 'string') {
+                        node.textContent = props[k]
+                    }
+                }else{
+                    node[k] = props[k]
+                }
+            })
+        }
+
+        function updateTextComponent(type) {
+            return document.createTextNode(type)
+        }
+
+        function updateFunctionComponent(vnode) {
+            const { type, props } = vnode;
+            const _vnode = type(props);
+            return createNode(_vnode);
+        }
+
+        function updateClassComponent(vnode) {
+            const { type, props } = vnode;
+            const _vnode = new type(props).render()
+            return createNode(_vnode)
+        }
+
+        function reconcileChildren(workInProgress, children) {
+            // 文本节点
+            if(typeof children === 'string' || typeof children === 'number') {
+                return;
+            }
+            const _children = Array.isArray(children) ? children : [children];
+            let previousNewFiber = null;
+            for(let i = 0; i < _children.length; i ++) {
+                const child = _children[i];
+                const newFiber = {
+                    type: child.type,
+                    props: {...child.props},
+                    stateNode: null,
+                    child: null,
+                    sibling: null,
+                    return: workInProgress
+                }
+                if(i === 0) {
+                    // 第一个子节点是父节点的 child
+                    workInProgress.child = newFiber;
+                }else {
+                    // 记录兄弟节点 sibling
+                    previousNewFiber.sibling = newFiber;
+                }
+                // 记录上一个fiber
+                previousNewFiber = newFiber;
+            }   
+        }
+
+        function Component(props) {
+            this.props = props;
+        }
+        Component.prototype.isReactComponent = {}
+
+        /**********************************************************************************/
+        const _ReactDOM = {
+            render
+        }
+        /**********************************************************************************/
+        /**********************************************************************************/
+        class Com extends Component {
+            render() {
+                return (
+                    <div className="com">{this.props.name}</div>
+                )
+            }
+        }
+
+        function Fun(props) {
+            return <div className="func">{props.name}</div>
+        }
+    
+        /** @jsx React.createElement */
+        const element = (
+            <div className="wrap">
+                <h1 className="text-h1">
+                    <p id="p">p</p>
+                    <a href="https://www.taobao.com">taobao</a>
+                </h1>
+                {/* 
+                    <Fun name="Lucas" />
+                    <Com name="Lucas" />
+                */}
+            </div>
+        )
+
+        console.log(element)
+        _ReactDOM.render(element, document.getElementById('container'))
+        /**********************************************************************************/
+        /**********************************************************************************/
+    </script>
+</body>
+</html>
