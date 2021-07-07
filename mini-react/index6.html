@@ -62,13 +62,13 @@
         // sibling 下一个兄弟节点
         // return 父节点
         function perforUnitOfWork(workInProgress) {
+            // console.log('workInProgress')
+            // console.log(workInProgress)
             /****************** 执行任务 *********************/
             const { type } = workInProgress;
             if(typeof type === 'string') {
                 // 原生节点
                 updateHostComponent(workInProgress)
-            }else {
-                // 函数组件等
             }
 
             /*************** 深度遍历 返回下一个执行任务 ***************/
@@ -85,7 +85,6 @@
                 }
                 nextFiber = nextFiber.return;
             }
-            
         }
         
         function commitWorker(workInProgress) {
@@ -101,7 +100,10 @@
         // 创建并返回 dom
         function createNode(workInProgress) {
             const { type, props } = workInProgress;
-            const node = document.createElement(type);
+            let node = null;
+            if(typeof type === 'string') {
+                node = document.createElement(type);
+            }
             // 添加dom属性及创建文本节点
             updateNode(node, props);
             return node;
@@ -134,18 +136,6 @@
             return document.createTextNode(type)
         }
 
-        function updateFunctionComponent(vnode) {
-            const { type, props } = vnode;
-            const _vnode = type(props);
-            return createNode(_vnode);
-        }
-
-        function updateClassComponent(vnode) {
-            const { type, props } = vnode;
-            const _vnode = new type(props).render()
-            return createNode(_vnode)
-        }
-
         function reconcileChildren(workInProgress, children) {
             // 文本节点
             if(typeof children === 'string' || typeof children === 'number') {
@@ -154,10 +144,16 @@
             const _children = Array.isArray(children) ? children : [children];
             let previousNewFiber = null;
             for(let i = 0; i < _children.length; i ++) {
-                const child = _children[i];
+                let child = _children[i];
+                if(typeof child.type === 'function') {
+                    child = child.type.prototype.isReactComponent 
+                    ? new child.type(child.props).render() // 类组件
+                    : child.type(child.props) // 函数组件
+                }
+                const { type, props } = child;
                 const newFiber = {
-                    type: child.type,
-                    props: {...child.props},
+                    type,
+                    props,
                     stateNode: null,
                     child: null,
                     sibling: null,
@@ -205,14 +201,17 @@
                     <p id="p">p</p>
                     <a href="https://www.taobao.com">taobao</a>
                 </h1>
+                <Fun name="Lucas" />
+                <Com name="Lucas" />
                 {/* 
-                    <Fun name="Lucas" />
-                    <Com name="Lucas" />
                 */}
             </div>
         )
 
+        console.log('---- element ----')
         console.log(element)
+        console.log('-----------------')
+
         _ReactDOM.render(element, document.getElementById('container'))
         /**********************************************************************************/
         /**********************************************************************************/
