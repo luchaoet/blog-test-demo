@@ -137,6 +137,8 @@
         }
 
         function reconcileChildren(workInProgress, children) {
+            console.log('children')
+            console.log(children)
             // 文本节点
             if(typeof children === 'string' || typeof children === 'number') {
                 return;
@@ -185,13 +187,13 @@
         class Com extends Component {
             render() {
                 return (
-                    <div className="com">{this.props.name}</div>
+                    <div className="com">类组件-{this.props.name}</div>
                 )
             }
         }
 
         function Fun(props) {
-            return <div className="func">{props.name}</div>
+            return <div className="func">函数组件-{props.name}</div>
         }
     
         /** @jsx React.createElement */
@@ -202,9 +204,12 @@
                     <a href="https://www.taobao.com">taobao</a>
                 </h1>
                 <Fun name="Lucas" />
+                <p>test1</p>
                 <Com name="Lucas" />
-                {/* 
-                */}
+                <div>
+                    test2
+                    <span>span</span>
+                </div>
             </div>
         )
 
