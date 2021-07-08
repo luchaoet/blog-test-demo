@@ -13,12 +13,16 @@
   "devDependencies": {
     "acorn": "^8.2.4",
     "ast-traverse": "^0.1.1",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
     "commander": "^7.2.0",
     "escodegen": "^2.0.0",
     "esprima": "^4.0.1",
     "estraverse": "^5.2.0",
     "inquirer": "^8.0.0",
-    "log-symbols": "^2.0.0"
+    "log-symbols": "^2.0.0",
+    "parcel-bundler": "^1.12.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
