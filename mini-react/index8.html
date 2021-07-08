@@ -73,6 +73,8 @@
                 type.prototype.isReactComponent ? updateClassComponent(workInProgress) : updateFunctionComponent(workInProgress)
             }else if(typeof type === 'undefined') {
                 updateTextComponent(workInProgress)
+            }else if(type === Symbol.for('react.fragment')){
+                updateFragmentComponent(workInProgress)
             }
 
             /*************** 深度遍历 返回下一个执行任务 ***************/
@@ -144,6 +146,12 @@
             }
         }
 
+        function updateFragmentComponent(workInProgress) {
+            // console.log(workInProgress)
+            const { props } = workInProgress;
+            reconcileChildren(workInProgress, props.children);
+        }
+
         // 添加dom属性及创建文本节点
         function updateNode(node, props) {
             Object.keys(props)
@@ -152,6 +160,12 @@
                     if(typeof props[k] === 'string') {
                         node.textContent = props[k]
                     }
+                }else if(typeof props[k] === 'function'){
+                    const event = {
+                        onClick: 'click',
+                        onChange: 'input'
+                    }
+                    node.addEventListener(event[k], props[k])
                 }else{
                     node[k] = props[k]
                 }
@@ -162,7 +176,8 @@
             // console.log('children')
             // console.log(children)
             // 文本节点
-            if(typeof children === 'string' || typeof children === 'number') {
+            // input 无 children
+            if(!children || typeof children === 'string' || typeof children === 'number') {
                 return;
             }
             const _children = Array.isArray(children) ? children : [children];
@@ -179,8 +194,6 @@
                     return: workInProgress
                 }
                 if(typeof child === 'string') {
-                    // console.log('child')
-                    // console.log(child)
                     newFiber.props = child;
                 }
                 if(i === 0) {
@@ -196,7 +209,9 @@
         }
 
         function Component(props) {
+            console.log('props', props)
             this.props = props;
+            this.state = {}
         }
         Component.prototype.isReactComponent = {}
 
@@ -207,21 +222,31 @@
         /**********************************************************************************/
         /**********************************************************************************/
         class ClassComponent extends Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    value: 1,
+                }
+            }
             render() {
+            
                 return (
-                    <div className="com">类组件-{this.props.name}</div>
+                    <>
+                        <input type="text" onChange={() => {}} />
+                        <div className="com">类组件-{this.props.name}</div>
+                    </>
                 )
             }
         }
 
         function FunctionComponent(props) {
-            const [state, setState] = useState();
-            console.log(state, setState)
-            return <div className="func">函数组件-{props.name}</div>
+            const [state, setState] = useState(props.name);
+            // console.log(state, setState)
+            return <div className="func" onClick={() => {}}>函数组件-{state}</div>
         }
 
         function useState(initValue) {
-            return []
+            return [initValue]
         }
     
         /** @jsx React.createElement */
