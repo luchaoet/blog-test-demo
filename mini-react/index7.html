@@ -69,6 +69,10 @@
             if(typeof type === 'string') {
                 // 原生节点
                 updateHostComponent(workInProgress)
+            }else if(typeof type === 'function') {
+                type.prototype.isReactComponent ? updateClassComponent(workInProgress) : updateFunctionComponent(workInProgress)
+            }else if(typeof type === 'undefined') {
+                updateTextComponent(workInProgress)
             }
 
             /*************** 深度遍历 返回下一个执行任务 ***************/
@@ -89,7 +93,12 @@
         
         function commitWorker(workInProgress) {
             if(!workInProgress) return;
-            const parentNode = workInProgress.return.stateNode;
+            let parentNodeFiber = workInProgress.return;
+            // 函数组件没有 stateNode，所以它的子节点得挂到函数组件的父节点上
+            while(!parentNodeFiber.stateNode) {
+                parentNodeFiber = parentNodeFiber.return;
+            }
+            const parentNode = parentNodeFiber.stateNode;
             if(workInProgress.stateNode) {
                 parentNode.appendChild(workInProgress.stateNode)
             }
@@ -118,6 +127,23 @@
             reconcileChildren(workInProgress, props.children);
         }
 
+        function updateFunctionComponent(workInProgress) {
+            const { type, props } = workInProgress;
+            reconcileChildren(workInProgress, type(props));
+        }
+
+        function updateClassComponent(workInProgress) {
+            const { type, props } = workInProgress;
+            reconcileChildren(workInProgress, new type(props).render());
+        }
+
+        function updateTextComponent(workInProgress) {
+            const { stateNode, props } = workInProgress;
+            if(!stateNode) {
+                workInProgress.stateNode = document.createTextNode(props)
+            }
+        }
+
         // 添加dom属性及创建文本节点
         function updateNode(node, props) {
             Object.keys(props)
@@ -132,13 +158,9 @@
             })
         }
 
-        function updateTextComponent(type) {
-            return document.createTextNode(type)
-        }
-
         function reconcileChildren(workInProgress, children) {
-            console.log('children')
-            console.log(children)
+            // console.log('children')
+            // console.log(children)
             // 文本节点
             if(typeof children === 'string' || typeof children === 'number') {
                 return;
@@ -147,11 +169,6 @@
             let previousNewFiber = null;
             for(let i = 0; i < _children.length; i ++) {
                 let child = _children[i];
-                if(typeof child.type === 'function') {
-                    child = child.type.prototype.isReactComponent 
-                    ? new child.type(child.props).render() // 类组件
-                    : child.type(child.props) // 函数组件
-                }
                 const { type, props } = child;
                 const newFiber = {
                     type,
@@ -160,6 +177,11 @@
                     child: null,
                     sibling: null,
                     return: workInProgress
+                }
+                if(typeof child === 'string') {
+                    // console.log('child')
+                    // console.log(child)
+                    newFiber.props = child;
                 }
                 if(i === 0) {
                     // 第一个子节点是父节点的 child
@@ -184,7 +206,7 @@
         }
         /**********************************************************************************/
         /**********************************************************************************/
-        class Com extends Component {
+        class ClassComponent extends Component {
             render() {
                 return (
                     <div className="com">类组件-{this.props.name}</div>
@@ -192,7 +214,11 @@
             }
         }
 
+<<<<<<< HEAD
         function Fun(props) {
+=======
+        function FunctionComponent(props) {
+>>>>>>> 3277aecb9b8264ea34e8fa1e693961fd1424e4e3
             return <div className="func">函数组件-{props.name}</div>
         }
     
@@ -203,6 +229,7 @@
                     <p id="p">p</p>
                     <a href="https://www.taobao.com">taobao</a>
                 </h1>
+<<<<<<< HEAD
                 <Fun name="Lucas" />
                 <p>test1</p>
                 <Com name="Lucas" />
@@ -210,6 +237,13 @@
                     test2
                     <span>span</span>
                 </div>
+=======
+                <FunctionComponent name="Lucas" />
+                <ClassComponent name="Lucas" />
+                {/* 
+                */}
+                <div>嘿嘿二号</div>
+>>>>>>> 3277aecb9b8264ea34e8fa1e693961fd1424e4e3
             </div>
         )
 
