@@ -1,3 +1,4 @@
+import Component from './component'
 function createElement(tag, attrs, ...childrens) {
   return {
     tag,
@@ -5,7 +6,9 @@ function createElement(tag, attrs, ...childrens) {
     childrens,
   }
 }
-const React = {
+
+export default {
   createElement,
+  Component,
 }
-export default React
+export { Component }
