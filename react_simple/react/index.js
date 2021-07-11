@@ -1,9 +1,11 @@
 import Component from './component'
 function createElement(tag, attrs, ...childrens) {
+  const _attrs = attrs || {}
   return {
     tag,
-    attrs,
+    attrs: _attrs,
     childrens,
+    key: _attrs.key || null,
   }
 }
 

@@ -8,41 +8,65 @@ function FunctionComponent(props) {
 class ClassComponent extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      num: 0,
+    }
   }
   componentWillMount() {
-    console.log('组件即将加载')
+    console.log('componentWillMount')
   }
   componentDidMount() {
-    console.log('组件加载完成')
+    console.log('componentDidMount')
   }
-  componentWillReceiveProps(nextProps) {}
-  shouldComponentUpdate(nextProps, nextState) {}
+  componentWillReceiveProps(nextProps) {
+    console.log('componentWillReceiveProps')
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('shouldComponentUpdate')
+  }
   componentWillUpdate() {
-    console.log('组件将要更新')
+    console.log('componentWillUpdate')
   }
   componentDidUpdate() {
-    console.log('组件完成更新')
+    console.log('componentDidUpdate')
   }
   componentWillUnmount() {
-    console.log('组件将要卸载')
+    console.log('componentWillUnmount')
+  }
+
+  handleClick() {
+    this.setState({
+      num: this.state.num + 1,
+    })
   }
 
   render() {
     const { style, name } = this.props
-    return <div style={style}>类组件-{name}</div>
+    const { num } = this.state
+    return (
+      <div style={style}>
+        <div className={num}>类组件-{name}</div>
+        <p style={{ display: 'flex', alignItems: 'center' }}>
+          <span>num-{num}</span>
+          <button style={{ marginLeft: 10, cursor: 'pointer' }} onClick={this.handleClick.bind(this)}>
+            按钮
+          </button>
+        </p>
+      </div>
+    )
   }
 }
 
 const element = (
-  <div className="title" style={{ color: 'red', fontSize: 20 }} onClick={() => console.log(1)}>
+  <div className="title" style={{ color: 'red', fontSize: 20 }}>
     hello <span>react</span>
+    <div onClick={() => console.log(1)}>点击事件</div>
     <FunctionComponent name="嘿嘿嘿" />
     <ClassComponent style={{ color: '#333' }} name="哟哟哟" />
   </div>
 )
-console.log('---element---')
-console.log(element)
-console.log('-----------')
+// console.log('---element---')
+// console.log(element)
+// console.log('-----------')
 
 ReactDOM.render(element, document.querySelector('#container'))
