@@ -65,8 +65,8 @@ const element = (
     <ClassComponent style={{ color: '#333' }} name="哟哟哟" />
   </div>
 )
-// console.log('---element---')
-// console.log(element)
-// console.log('-----------')
+console.log('---element---')
+console.log(element)
+console.log('-----------')
 
 ReactDOM.render(element, document.querySelector('#container'))

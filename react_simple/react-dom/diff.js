@@ -8,6 +8,7 @@ function diff(dom, vnode, container) {
   return ret
 }
 
+// 对比元素节点 返回最新的元素节点
 function diffNode(dom, vnode) {
   let out = dom
   if (vnode === undefined || vnode === null || typeof vnode === 'boolean') vnode = ''
@@ -39,6 +40,7 @@ function diffNode(dom, vnode) {
   return out
 }
 
+// 对比函数或类组件 返回最新的组件
 function diffComponent(dom, vnode) {
   let comp = dom
   // 如果组件没有变化,则重新设置 props;   执行
