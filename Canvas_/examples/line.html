@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+		<style>
+			#canvasWrap {
+				/* width: 500px; 
+				height: 350px; */
+				display: inline-block;
+			}
+		</style>
+</head>
+<body>
+<div id="canvasWrap"></div>
+<canvas id="mycanvas"></canvas>
+<script src="../util.js"></script>
+<script>
+    // var canvasEle = Util.CANVAS.createElement(300,150);
+    // document.querySelector('#canvasWrap').appendChild(canvasEle)
+
+    // const context = canvasEle.getContext('2d');
+    // Util.CANVAS.drawLine({
+    //     context,
+    //     startPoint: {x: 74.5,y:30.5},
+    //     lineTo: [
+    //         {x: 100, y: 80},
+    //         {x: 110, y: 100},
+    //     ],
+    //     lineWidth: 1,
+    //     strokeStyle: 'red'
+    // })
+    Util.CANVAS.init({
+        dom: document.querySelector('#canvasWrap'),
+        option: {
+          xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+							data: [820, 932, 901, 934, 1290, 1330, 1320],
+							type: 'line',
+							smooth: true,
+            },
+          ],
+        }
+    })
+</script>
+</body>
+</html>

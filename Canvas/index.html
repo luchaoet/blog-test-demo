@@ -53,17 +53,25 @@
       const linkStartPointX = startPointX;
       const linkStartPointY = startPointY;
       context.moveTo(linkStartPointX,linkStartPointY);
-      context.lineTo(linkStartPointX+50,linkStartPointY);
-      context.lineTo(linkStartPointX,linkStartPointY+30);
-      context.lineTo(linkStartPointX,linkStartPointY+80);
+      context.lineTo(linkStartPointX+500,linkStartPointY);
+      // context.lineTo(linkStartPointX,linkStartPointY+30);
+      // context.lineTo(linkStartPointX,linkStartPointY+80);
       context.stroke();
       context.closePath();
     }
 
-    var canvasEle = Util.CANVAS.createElement(300,150);
+    var canvasEle = Util.CANVAS.createElement(1000,1000);
     const context = canvasEle.getContext('2d');
-    drawLine({context:context,startPointX:74.5,startPointY:30.5})
-    drawLine({context:context,startPointX:164,startPointY:30})
+    
+    for (let index = 0; index < 10; index++) {
+
+      drawLine({context:context, startPointX: 0, startPointY: index * 20 + 0.5, strokeStyle: '#cecece'})
+      
+    }
+
+
+
+    // drawLine({context:context,startPointX:164,startPointY:30})
     document.querySelector('#canvasWrap').appendChild(canvasEle);
     // Util.CANVAS.drawRect({context:context,x:0,y:0,width:300,height:150,strokeStyle:'#000'})
   </script>
