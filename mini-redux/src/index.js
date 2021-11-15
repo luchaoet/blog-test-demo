@@ -4,18 +4,16 @@ import './index.css';
 import App from './App';
 import store from './redux-test/store';
 import reportWebVitals from './reportWebVitals';
+import {Provider} from './redux-test/Context'
 
-function listen() {
-  ReactDOM.render(
-      <React.StrictMode>
-          <App store={store} />
-      </React.StrictMode>,
-      document.getElementById('root')
-  );
-}
-listen();
-
-store.subscribe(listen);
+ReactDOM.render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <App text="abc" />
+      </Provider>
+    </React.StrictMode>,
+    document.getElementById('root')
+);
 
 
 // If you want to start measuring performance in your app, pass a function

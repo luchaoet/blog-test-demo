@@ -1,6 +1,6 @@
 import { createStore } from './redux';
 const defaultState = {
-    value: 1,
+    value: 10,
 };
 
 function reducer(state = defaultState, action) {

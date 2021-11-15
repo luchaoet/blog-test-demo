@@ -1,25 +1,36 @@
 import './App.css'
+import connect from './redux-test/connect';
 
-function App({ store }) {
+
+function App(props) {
+  console.log('App', props)
   return (
-      <div className="App">
-          <span>{store.getState().value}</span>
-          <button
-              onClick={() => {
-                  store.dispatch({ type: 'INCREMENT' });
-              }}
-          >
-              +
-          </button>
-          <button
-              onClick={() => {
-                  store.dispatch({ type: 'DECREMENT' });
-              }}
-          >
-              -
-          </button>
-      </div>
+    <>
+      <div>{props.number}</div>
+      <button onClick={()=> {
+        // props.dispatch({type: 'INCREMENT'})
+        props.onSwitchColor()
+      }}>+</button>
+    </>
   );
 }
 
-export default App;
+
+//告诉connect如何获取、整合状态
+const mapStateToProps = (state) => {
+  // 类似于重命名了
+  return {
+    number: state.value
+  }
+};
+//告诉connect如何触发 dispatch
+const mapDispatchToProps = (dispatch) => {
+  return {
+      dispatch,
+      onSwitchColor: () => {
+          dispatch({ type: 'INCREMENT' });
+      },
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
